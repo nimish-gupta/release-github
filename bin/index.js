@@ -17,9 +17,8 @@ const cli = meow(
     --repo, -r            Will be the repository on which the release will be created ${required}
     --owner, -o           Owner of the repo, anyone who has push permissions to the github-repo ${required}
     --token, -t           Github secret token of the user
-    --create-release      Github force create release only if secret token is present.
+    --create-release      Github will create the release only if secret token is present.
     --show-url            Will give the url of the release.
-    --open                Will open the url in the browser
     --pre-filled-release  Show a pre-filled form (secret token not required)
     --commit-id           Commit id from which the new release should run
 `,
@@ -47,10 +46,6 @@ const cli = meow(
 			showUrl: {
 				type: 'boolean',
 				default: false,
-			},
-			open: {
-				type: 'boolean',
-				default: true,
 			},
 			releaseVersion: {
 				type: 'string',
