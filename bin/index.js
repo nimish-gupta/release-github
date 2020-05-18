@@ -18,7 +18,7 @@ const cli = meow(
     --repo, -r            Will be the repository on which the release will be created
     --owner, -o           Owner of the repo, anyone who has push permissions to the github-repo
     --pre-filled-release  Show a pre-filled form (secret token not required)
-    --git-path            Path of the git repo, by default it will consider the dir in which the command will run
+    --commit-id           Commit id from which the new release should run
 `,
 	{
 		flags: {
@@ -59,8 +59,8 @@ const cli = meow(
 			preFilledRelease: {
 				type: 'boolean',
 			},
-			gitPath: {
-				type: 'string',
+			commitId: {
+				type: string,
 			},
 		},
 	}
