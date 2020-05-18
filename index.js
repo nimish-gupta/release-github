@@ -31,8 +31,10 @@ const getOrThrow = (cmd, msg = '') => {
 	return result;
 };
 
+const createTag = (version) => `v${version}`;
+
 const getCommitRange = (options) => {
-	const range = { end: `v${options.releaseVersion}` };
+	const range = { end: createTag(options.releaseVersion) };
 	if (!isNone(options.commitId)) {
 		range.start = options.commitId;
 		return range;
@@ -80,8 +82,11 @@ const getReleaseBody = async (options) => {
 };
 
 const openPreFilledRelease = async ({ body, options }) => {
+	const tag = createTag(options.releaseVersion);
 	const url = newGithubReleaseUrl({
 		body,
+		tag,
+		title: tag,
 		repo: options.repo,
 		user: options.owner,
 	});
