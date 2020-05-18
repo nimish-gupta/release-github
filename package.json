@@ -1,0 +1,23 @@
+{
+	"name": "github-release",
+	"version": "1.0.0",
+	"description": "This will create the release and tags for github",
+	"main": "./bin/index.js",
+	"repository": "https://github.com/nimish-gupta/github-release",
+	"author": "Nimish <nimishgupta18396@gmail.com>",
+	"license": "MIT",
+	"private": false,
+	"scripts": {
+		"start": "node index.js",
+		"cli": "node ."
+	},
+	"bin": {
+		"github-release": "./bin/index.js"
+	},
+	"dependencies": {
+		"command-exists": "^1.2.9",
+		"meow": "^7.0.1",
+		"new-github-release-url": "^1.0.0",
+		"open": "^7.0.4"
+	}
+}
