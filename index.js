@@ -1,13 +1,13 @@
 const newGithubReleaseUrl = require('new-github-release-url');
 const open = require('open');
 const { execSync } = require('child_process');
-const commandExists = require('command-exists');
+const commandExists = require('command-exists').sync;
 
 const isNone = (val) => val === null || val === undefined;
 
-const promisify = async (promise) => {
+const tryCatch = (cmd) => {
 	try {
-		const result = await promise;
+		const result = cmd;
 		return [null, result];
 	} catch (error) {
 		return [error, null];
@@ -32,7 +32,7 @@ const getOrThrow = (cmd, msg = '') => {
 };
 
 const getCommitRange = (options) => {
-	const range = { start: `v${options.releaseVersion}` };
+	const range = { end: `v${options.releaseVersion}` };
 	if (!isNone(options.commitId)) {
 		range.start = options.commitId;
 		return range;
@@ -52,13 +52,17 @@ const getCommitRange = (options) => {
 		exec('git rev-list --max-parents=0 HEAD'),
 		'Could not fetch the start of commit'
 	);
-	range.start = firstCommit;
+	range.start = firstCommit.replace('\n', '');
 	return range;
 };
 
+const getCompareLink = ({ options, start, end }) =>
+	`https://github.com/${options.owner}/${options.repo}/compare/${start}...${end}`;
+
 const getReleaseBody = async (options) => {
 	getOrThrow(
-		await promisify(commandExists('git', 'git not exists. Please install git'))
+		tryCatch(commandExists('git')),
+		'git not exists. Please install git'
 	);
 
 	const { start, end } = getCommitRange(options);
@@ -68,10 +72,11 @@ const getReleaseBody = async (options) => {
 	);
 
 	getOrThrow(exec('git push --tags'), `Could not push tags`);
-	return getOrThrow(
+	const log = getOrThrow(
 		exec(`git log --pretty=format:"- %s %h" ${start}...${end};`),
 		'Could not retrieve the git log'
 	);
+	return `${log}\n\n${getCompareLink({ options, start, end })}`;
 };
 
 const openPreFilledRelease = async ({ body, options }) => {
@@ -94,7 +99,7 @@ const main = async (args, cli = false) => {
 		throw new Error('Repo and owner are required options.');
 	}
 
-	const body = getReleaseBody(options);
+	const body = await getReleaseBody(options);
 
 	if (options.preFilledRelease) {
 		await openPreFilledRelease({ body, options });
