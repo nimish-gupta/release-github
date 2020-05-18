@@ -61,23 +61,23 @@ const getCommitRange = (options) => {
 const getCompareLink = ({ options, start, end }) =>
 	`https://github.com/${options.owner}/${options.repo}/compare/${start}...${end}`;
 
-const getReleaseBody = async (options) => {
+const createLatestTag = (tag) => {
 	getOrThrow(
-		tryCatch(commandExists('git')),
-		'git not exists. Please install git'
-	);
-
-	const { start, end } = getCommitRange(options);
-	getOrThrow(
-		exec(`git tag -a ${end} -m ${end}`),
+		exec(`git tag -a ${tag} -m ${tag}`),
 		'Could not create the latest tag'
 	);
 
 	getOrThrow(exec('git push --tags'), `Could not push tags`);
+};
+
+const getReleaseBody = async ({ options, start, end }) => {
+	createLatestTag(end);
+
 	const log = getOrThrow(
 		exec(`git log --pretty=format:"- %s %h" ${start}...${end};`),
 		'Could not retrieve the git log'
 	);
+
 	return `${log}\n\n${getCompareLink({ options, start, end })}`;
 };
 
@@ -98,13 +98,25 @@ const openPreFilledRelease = async ({ body, options }) => {
 	await open(url);
 };
 
+const checkGitExists = getOrThrow(
+	tryCatch(commandExists('git')),
+	'git not exists. Please install git'
+);
+
+const requiredOptionsPresent = (options) =>
+	!(isNone(options.repo) || isNone(options.owner));
+
 const main = async (args, cli = false) => {
 	const options = { ...args, cli };
-	if (isNone(options.repo) || isNone(options.owner)) {
+
+	if (!requiredOptionsPresent(options)) {
 		throw new Error('Repo and owner are required options.');
 	}
 
-	const body = await getReleaseBody(options);
+	checkGitExists();
+
+	const { start, end } = getCommitRange(options);
+	const body = await getReleaseBody({ options, start, end });
 
 	if (options.preFilledRelease) {
 		await openPreFilledRelease({ body, options });
