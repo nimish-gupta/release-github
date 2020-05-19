@@ -24,5 +24,11 @@
 		"new-github-release-url": "^1.0.0",
 		"node-fetch": "^2.6.0",
 		"open": "^7.0.4"
-	}
+	},
+	"keywords": [
+		"github",
+		"release",
+		"git",
+		"version"
+	]
 }
