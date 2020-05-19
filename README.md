@@ -17,7 +17,7 @@ CLI used to create github releases on the basis of the version number
 ```
 
 ## Development
-- `git clone https://github.com/nimish-gupta/release-github.git`// Cloning the git repo
+- Clone the repo - `git clone https://github.com/nimish-gupta/release-github.git`
 - `cd release-github`
-- `yarn` // Installing the dependencies
-- `yarn cli` // For starting the cli app
+- Install all the dependencies - `yarn`
+- Start the cli app - `yarn cli`
