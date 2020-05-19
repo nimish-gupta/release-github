@@ -16,8 +16,6 @@ CLI used to create github releases on the basis of the version number
     --commit-id           Commit id from which the new release should run
 ```
 
-## Working Demo
-
 ## Development
 - `git clone https://github.com/nimish-gupta/release-github.git`// Cloning the git repo
 - `cd release-github`
