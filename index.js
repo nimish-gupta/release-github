@@ -176,4 +176,4 @@ const main = async (args, cli = false) => {
 	}
 };
 
-module.exports = { main };
+module.exports = main;
