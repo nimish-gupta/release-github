@@ -28,9 +28,11 @@ const exec = (command) => {
 
 const getOrThrow = (cmd, msg = '') => {
 	const [error, result] = cmd;
+
 	if (isNotNone(error)) {
 		throw new Error(`${msg}, due to ${error.message}`);
 	}
+
 	return result;
 };
 
@@ -38,12 +40,6 @@ const createTag = (version) => `v${version}`;
 
 const createGithubRelease = async ({ body, options }) => {
 	const tag = createTag(options.releaseVersion);
-
-	const params = {
-		body,
-		name: tag,
-		tag_name: tag,
-	};
 
 	var requestOptions = {
 		method: 'POST',
@@ -53,28 +49,37 @@ const createGithubRelease = async ({ body, options }) => {
 			).toString('base64')}`,
 			'Content-Type': 'application/javascript',
 		},
-		body: JSON.stringify(params),
+		body: JSON.stringify({
+			body,
+			name: tag,
+			tag_name: tag,
+		}),
 	};
 
 	const response = await fetch(
 		`https://api.github.com/repos/${options.owner}/${options.repo}/releases`,
 		requestOptions
 	);
+
 	const res = await response.json();
 	return res.html_url;
 };
 
 const getCommitRange = (options) => {
 	const range = { end: createTag(options.releaseVersion) };
+
 	if (isNotNone(options.commitId)) {
 		range.start = options.commitId;
 		return range;
 	}
+
 	const [errorTag, latestTag] = exec('git describe --abbrev=0 --tags');
+
 	if (isNotNone(latestTag)) {
 		range.start = latestTag;
 		return range;
 	}
+
 	if (
 		errorTag.message.indexOf('No names found, cannot describe anything.') === -1
 	) {
@@ -85,6 +90,7 @@ const getCommitRange = (options) => {
 		exec('git rev-list --max-parents=0 HEAD'),
 		'Could not fetch the start of commit'
 	);
+
 	range.start = firstCommit.replace('\n', '');
 	return range;
 };
