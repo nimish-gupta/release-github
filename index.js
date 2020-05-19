@@ -128,7 +128,10 @@ const openPreFilledRelease = async ({ body, options }) => {
 		user: options.owner,
 	});
 
-	if (options.cli !== false && options.showUrl !== true) {
+	if (
+		options.open === true ||
+		(options.cli !== false && options.showUrl !== true)
+	) {
 		await open(url);
 	}
 
@@ -148,7 +151,7 @@ const optionsShouldPresent = (options, keys) => {
 		return true;
 	}
 
-	throw new Error(`Following flags are required, ${filter.join(', ')}`);
+	throw new Error(`Following flags are required: ${filter.join(', ')}`);
 };
 
 const main = async (args, cli = false) => {
@@ -163,17 +166,16 @@ const main = async (args, cli = false) => {
 	console.log(chalk.blue('Git release body contents'));
 	console.log(chalk.gray(body));
 
-	if (options.preFilledRelease) {
-		const url = await openPreFilledRelease({ body, options });
-		console.log(chalk.green(url));
-		return url;
-	}
 	if (options.createRelease) {
 		optionsShouldPresent(options, ['token']);
 		const url = await createGithubRelease({ body, options });
 		console.log(chalk.green(url));
 		return url;
 	}
+
+	const url = await openPreFilledRelease({ body, options });
+	console.log(chalk.green(url));
+	return url;
 };
 
 module.exports = main;

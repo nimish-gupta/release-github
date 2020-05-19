@@ -57,6 +57,7 @@ const cli = meow(
 			},
 			preFilledRelease: {
 				type: 'boolean',
+				default: true,
 			},
 			commitId: {
 				type: 'string',
