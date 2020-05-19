@@ -76,7 +76,7 @@ const getCommitRange = (options) => {
 	const [errorTag, latestTag] = exec('git describe --abbrev=0 --tags');
 
 	if (isNotNone(latestTag)) {
-		range.start = latestTag;
+		range.start = latestTag.replace('\n', '');
 		return range;
 	}
 
@@ -128,11 +128,11 @@ const openPreFilledRelease = async ({ body, options }) => {
 		user: options.owner,
 	});
 
-	if (options.cli === false || options.showUrl === true) {
-		return url;
+	if (options.cli !== false && options.showUrl !== true) {
+		await open(url);
 	}
 
-	await open(url);
+	return url;
 };
 
 const checkGitExists = () =>
@@ -159,6 +159,9 @@ const main = async (args, cli = false) => {
 
 	const { start, end } = getCommitRange(options);
 	const body = await getReleaseBody({ options, start, end });
+
+	console.log(chalk.blue('Git release body contents'));
+	console.log(chalk.gray(body));
 
 	if (options.preFilledRelease) {
 		const url = await openPreFilledRelease({ body, options });
