@@ -10,7 +10,7 @@ const required = chalk.red('(required)');
 const cli = meow(
 	`
   Usage
-    $ github-release <options>
+    $ release-github <options>
 
     Options
     --release-version     Version for the new release ${required}
