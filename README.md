@@ -1,7 +1,41 @@
 # release-github
+
 CLI used to create github releases on the basis of the version number
 
+## Install
+
+`yarn add release-github`
+
+or
+
+`npm install --save release-github`
+
 ## Usage
+
+- In cli
+
+  `$release-github --release-version <version> --repo <repo> --owner <owner>`
+
+- As a module
+
+  ```javascript
+  const release = require("release-github");
+
+  // As a promise
+  release({
+      releaseVersion: "<version>",
+      repo: "<repo>"
+      owner: "<owner>"
+  })
+  .then(console.log)
+  .catch(console.error);
+
+  // Using async/await
+  await release({ releaseVersion: "<version>", repo: "<repo>", owner: "<owner>" });
+  ```
+
+### Options
+
 ```
     $ release-github <options>
 
@@ -17,6 +51,7 @@ CLI used to create github releases on the basis of the version number
 ```
 
 ## Development
+
 - Clone the repo - `git clone https://github.com/nimish-gupta/release-github.git`
 - `cd release-github`
 - Install all the dependencies - `yarn`
