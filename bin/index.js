@@ -3,7 +3,7 @@
 const meow = require('meow');
 const chalk = require('chalk');
 
-const Index = require('../index');
+const main = require('../index');
 
 const required = chalk.red('(required)');
 
@@ -65,4 +65,4 @@ const cli = meow(
 		},
 	}
 );
-Index.main(cli.flags, true);
+main(cli.flags, true);
